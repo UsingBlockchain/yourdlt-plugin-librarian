@@ -30,10 +30,3 @@ export default {
   },
 };
 </script>
-
-<style lang="css" scoped>
-span {
-  font-weight: 800;
-  text-decoration: underline;
-}
-</style>

@@ -8,7 +8,7 @@
  * @license     LGPL-3.0
  */
 import { BookletModel } from "@/models/BookletModel";
-import { YOURDLT_PLUGIN_ROUTES } from "./routes";
+import { YOURDLT_PLUGIN_ROUTES } from "@/routes";
 
 // child components
 // @ts-ignore
