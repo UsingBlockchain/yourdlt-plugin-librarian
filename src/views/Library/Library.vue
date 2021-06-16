@@ -13,20 +13,20 @@
   <span>library placeholder</span>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      greeting: "Hello, Librarian",
-    };
-  },
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
 
-  mounted() {
+@Component
+export default class Library extends Vue {
+
+  public greeting: string = "Hello, Librarian";
+
+  public mounted() {
     console.log("Librarian mounted");
-  },
+  }
 
-  created() {
+  public created() {
     console.log("Librarian created");
-  },
-};
+  }
+}
 </script>

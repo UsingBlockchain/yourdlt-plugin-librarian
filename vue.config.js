@@ -12,4 +12,4 @@ module.exports = {
     },
     // Enables templates in .vue files
     runtimeCompiler: true
-};
+}

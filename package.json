@@ -2,7 +2,7 @@
   "name": "@yourdlt/plugin-librarian",
   "description": "Librarian helps organize your on-chain data with YourDLT.",
   "homepage": "https://github.com/UsingBlockchain/yourdlt-plugin-librarian#readme",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": {
     "name": "Using Blockchain Ltd",
     "email": "info@ubc.digital",
@@ -13,14 +13,22 @@
     "url": "https://github.com/UsingBlockchain/yourdlt-plugin-librarian.git"
   },
   "license": "LGPL-3.0-only",
-  "main": "dist/YourDLTWalletPluginLibrarian.common.js",
+  "main": "dist/YourDLTWalletPluginLibrarian.umd.js",
+  "types": "dist/Librarian.d.ts",
+  "browser": {
+    "./sfc": "dist/views/Library/Library.vue"
+  },
   "files": [
     "dist/*",
-    "README.md"
+    "README.md",
+    "package.json"
   ],
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib --name YourDLTWalletPluginLibrarian src/main.ts",
+    "build": "npm run build:lib && npm run build:ts && npm run copy:vue",
+    "build:lib": "vue-cli-service build --target lib --name YourDLTWalletPluginLibrarian src/Librarian.ts --mode production",
+    "build:ts": "tsc --declaration src/Librarian.ts --emitDeclarationOnly --outDir dist/",
+    "copy:vue": "cpy '**/*.vue' '../dist/' --cwd=src --parents",
     "test:unit": "vue-cli-service test:unit",
     "lint": "npm run prettier && npm run eslint",
     "lint:fix": "npm run prettier:fix && npm run eslint:fix",
@@ -60,6 +68,7 @@
     "rimraf": "^3.0.2",
     "semver": "^5.3.0",
     "typescript": "^3.9.9",
-    "vue-template-compiler": "^2.5.2"
+    "vue-template-compiler": "^2.5.2",
+    "cpy-cli": "^3.1.1"
   }
 }
