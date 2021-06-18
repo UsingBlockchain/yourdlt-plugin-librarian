@@ -25,14 +25,12 @@ export const registerComponents = (): { [s: string]: VueConstructor } => {
   Object.keys(components).forEach((k) => Vue.component(k, components[k]));
   return components;
 }
-
-// export {
-//   Library,
-// };
 /// end-region components library
 
 /// region installable plugin
 export default {
+
+  view: 'Library',
 
   routes: [
     {
@@ -41,6 +39,7 @@ export default {
       meta: {
         protected: true,
         title: "My libraries",
+        hideFromMenu: true,
       },
       // @ts-ignore
       component: () => import("@/views/Library/Library.vue"),
@@ -55,7 +54,7 @@ export default {
       storageKey: "librarian.booklets",
       model: BookletModel,
       description: "Stores individual booklets to hold tagged entities.",
-    },
+    }
   ],
 
   settings: [{ enableNotifications: true }],
