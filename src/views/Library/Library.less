@@ -7,7 +7,7 @@
  * @author      Grégory Saive for Using Blockchain Ltd <greg@ubc.digital>
  * @license     LGPL-3.0
  */
-@import '../../theme.less';
+@import "../../theme.less";
 
 .yourdlt-plugin-librarian-container {
   position: relative;
@@ -18,31 +18,43 @@
   grid-column-gap: 0.3rem;
   grid-template-rows: 100%;
 
+  .dashboard-left-container {
+    display: grid;
+    grid-template-rows: auto;
+    grid-row-gap: 0.3rem;
+
+    .table-section {
+      background: @white;
+    }
+  }
+
   .dashboard-right-container {
     height: 100%;
+    min-width: 250px;
     background-color: @white;
     border-radius: @borderRadius;
     padding: 0 25px;
     display: flex;
     flex-direction: column;
-  }
 
-  .dashboard-left-container {
-    display: grid;
-    grid-template-rows: 1.5rem auto;
-    grid-row-gap: 0.3rem;
-
-    .dashboard-top-left-container {
-        height: 100%;
-        background-color: @white;
-        border-radius: @borderRadius;
+    .plugin-information {
+      height: 100%;
+      flex: 1;
     }
 
-    .dashboard-bottom-left-container {
-        height: 100%;
-        overflow: auto;
-        background-color: @white;
-        border-radius: @borderRadius;
+    .title {
+      margin: 0.2rem;
+      margin-top: 0.29rem;
+
+      .title_txt {
+        font-size: @biggerFont;
+        line-height: 33px;
+        color: @primary;
+      }
+    }
+
+    .table-section {
+      background: @white;
     }
   }
 }

@@ -2,7 +2,7 @@
   "name": "@yourdlt/plugin-librarian",
   "description": "Librarian helps organize your on-chain data with YourDLT.",
   "homepage": "https://github.com/UsingBlockchain/yourdlt-plugin-librarian#readme",
-  "version": "0.0.4",
+  "version": "0.1.1",
   "author": {
     "name": "Using Blockchain Ltd",
     "email": "info@ubc.digital",
@@ -13,7 +13,7 @@
     "url": "https://github.com/UsingBlockchain/yourdlt-plugin-librarian.git"
   },
   "license": "LGPL-3.0-only",
-  "main": "dist/YourDLTWalletPluginLibrarian.umd.js",
+  "main": "dist/YourDLTWalletPluginLibrarian.common.js",
   "types": "dist/Librarian.d.ts",
   "browser": {
     "./sfc": "dist/views/Library/Library.vue"
@@ -27,15 +27,8 @@
     "serve": "vue-cli-service serve",
     "build": "npm run build:lib && npm run build:ts && npm run copy:vue",
     "build:lib": "vue-cli-service build --target lib --name YourDLTWalletPluginLibrarian src/Librarian.ts --mode production",
-    "build:ts": "tsc --declaration src/Librarian.ts --emitDeclarationOnly --outDir dist/",
-    "copy:vue": "cpy '**/*.vue' '../dist/' --cwd=src --parents",
-    "test:unit": "vue-cli-service test:unit",
-    "lint": "npm run prettier && npm run eslint",
-    "lint:fix": "npm run prettier:fix && npm run eslint:fix",
-    "eslint": "eslint src/ --ext .ts && eslint src/ --ext .vue",
-    "eslint:fix": "eslint src/ --ext .ts --fix && eslint src/ --ext .vue --fix",
-    "prettier": "prettier --check ./src",
-    "prettier:fix": "prettier --write ./src"
+    "build:ts": "tsc --emitDeclarationOnly",
+    "copy:vue": "cpy '**/*.vue' '../dist/' --cwd=src --parents"
   },
   "dependencies": {
     "@yourdlt/wallet-api-bridge": "latest",
@@ -46,8 +39,6 @@
   "devDependencies": {
     "@babel/compat-data": "^7.14.0",
     "@babel/core": "^7.14.2",
-    "@typescript-eslint/eslint-plugin": "^2.15.0",
-    "@typescript-eslint/parser": "^2.15.0",
     "@vue/cli-plugin-babel": "^4.5.13",
     "@vue/cli-plugin-typescript": "^4.5.13",
     "@vue/cli-plugin-unit-jest": "^4.5.13",
@@ -61,11 +52,6 @@
     "babel-plugin-transform-vue-jsx": "^3.5.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-stage-2": "^6.24.1",
-    "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-prettier": "^3.4.0",
-    "eslint-plugin-vue": "^6.1.2",
-    "prettier": "2.0.5",
     "rimraf": "^3.0.2",
     "semver": "^5.3.0",
     "typescript": "^3.9.9",

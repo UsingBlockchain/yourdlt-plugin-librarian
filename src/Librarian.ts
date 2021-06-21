@@ -7,14 +7,13 @@
  * @author      Grégory Saive for Using Blockchain Ltd <greg@ubc.digital>
  * @license     LGPL-3.0
  */
-import Vue, { VueConstructor } from 'vue';
+import Vue, { VueConstructor } from "vue";
 
 // internal dependencies
 import { BookletModel } from "./models/BookletModel";
 
 // child components
-// @ts-ignore
-import Library from "@/views/Library/Library.vue";
+import Library from "./views/Library/Library.vue";
 
 /// region components library
 const components: { [s: string]: VueConstructor } = {
@@ -24,13 +23,12 @@ const components: { [s: string]: VueConstructor } = {
 export const registerComponents = (): { [s: string]: VueConstructor } => {
   Object.keys(components).forEach((k) => Vue.component(k, components[k]));
   return components;
-}
+};
 /// end-region components library
 
 /// region installable plugin
 export default {
-
-  view: 'Library',
+  view: "Library",
 
   routes: [
     {
@@ -54,7 +52,7 @@ export default {
       storageKey: "librarian.booklets",
       model: BookletModel,
       description: "Stores individual booklets to hold tagged entities.",
-    }
+    },
   ],
 
   settings: [{ enableNotifications: true }],
@@ -74,6 +72,6 @@ export default {
       description:
         "This permissions is requested to fetch mosaic balances for the active account.",
     },
-  ]
+  ],
 };
 /// end-region installable plugin

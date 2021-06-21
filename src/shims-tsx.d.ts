@@ -7,7 +7,7 @@
  * @author      Grégory Saive for Using Blockchain Ltd <greg@ubc.digital>
  * @license     LGPL-3.0
  */
-import Vue, { VNode } from 'vue';
+import Vue, { VNode } from "vue";
 
 declare global {
   namespace JSX {
