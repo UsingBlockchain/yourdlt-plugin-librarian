@@ -25,12 +25,18 @@
 
     .table-section {
       background: @white;
+
+      .table-header-container .table-header-item {
+        padding: .2rem .1rem;
+        font-size: @biggerFont;
+        font-family: @themeFont;
+      }
     }
   }
 
   .dashboard-right-container {
     height: 100%;
-    min-width: 250px;
+    min-width: 4.2rem;
     background-color: @white;
     border-radius: @borderRadius;
     padding: 0 25px;
@@ -45,6 +51,8 @@
     .title {
       margin: 0.2rem;
       margin-top: 0.29rem;
+      display: flex;
+      justify-content: space-between;
 
       .title_txt {
         font-size: @biggerFont;

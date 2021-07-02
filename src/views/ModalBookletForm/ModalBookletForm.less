@@ -1,0 +1,90 @@
+/**
+ * This file is part of YourDLT Wallet Plugins shared under LGPL-3.0
+ * Copyright (C) 2021 Using Blockchain Ltd, Reg No.: 12658136, United Kingdom
+ *
+ * @package     YourDLT Wallet Plugins
+ * @subpackage  Librarian
+ * @author      Grégory Saive for Using Blockchain Ltd <greg@ubc.digital>
+ * @license     LGPL-3.0
+ */
+@import "../../theme.less";
+
+.modal-booklet-form-wrapper {
+  /deep/.ivu-modal {
+    width: 9rem !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+  }
+
+  /deep/.ivu-modal-body {
+    margin-left: 0.6rem;
+    margin-right: 0.6rem;
+    padding-bottom: 0.4rem;
+    padding-top: 0.4rem;
+  }
+
+  /deep/.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 100%;
+  }
+
+  /deep/.title {
+    color: @primary;
+    font-size: @subtitleFont;
+    font-family: @themeFontBold;
+    max-width: 70%;
+  }
+
+  /deep/.warning-icon {
+    height: 0.6rem;
+  }
+
+  /deep/.body-text {
+    color: @primary;
+    font-size: @biggerFont;
+    font-family: @themeFontSemiBold;
+    line-height: 30px;
+    white-space: pre-wrap;
+    text-align: justify;
+
+    label {
+      color: @accentFirst;
+    }
+  }
+
+  hr.separator {
+    opacity: 0.2;
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+
+  /deep/.footer {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
+  }
+
+  /deep/.button {
+    margin-right: 0;
+    margin-left: 0.1rem;
+    padding: 0.1em 0.3rem;
+  }
+
+  /deep/.centered-content {
+    width: 100%;
+    text-align: center;
+  }
+
+  /deep/.top-space {
+    margin-top: 30px;
+  }
+
+  /deep/.bottom-space {
+    margin-bottom: 0.4rem;
+  }
+}

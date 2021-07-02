@@ -9,9 +9,22 @@
  */
 import Vue, { VueConstructor } from "vue";
 
-// internal dependencies
-import { BookletModel } from "./models/BookletModel";
+// vee-validate extension
+import { extend } from 'vee-validate';
+import { digits, excluded, integer, is, is_not, max_value, max, min_value, min, regex, required } from 'vee-validate/dist/rules';
+extend('digits', digits);
+extend('excluded', excluded);
+extend('integer', integer);
+extend('is', is);
+extend('is_not', is_not);
+extend('max_value', max_value);
+extend('max', max);
+extend('min_value', min_value);
+extend('min', min);
+extend('regex', regex);
+extend('required', required);
 
+// internal dependencies
 // child components
 import Library from "./views/Library/Library.vue";
 
@@ -50,7 +63,7 @@ export default {
   storages: [
     {
       storageKey: "librarian.booklets",
-      model: BookletModel,
+      primaryKey: 'id',
       description: "Stores individual booklets to hold tagged entities.",
     },
   ],
@@ -59,18 +72,53 @@ export default {
 
   permissions: [
     {
+      name: "librarian.readBooklets",
+      type: "action",
+      target: "db/SELECT",
+      description:
+        "This permission is requested to read booklets for the active account.",
+    },
+    {
+      name: "librarian.createBooklets",
+      type: "action",
+      target: "db/INSERT",
+      description:
+        "This permission is requested to store booklets for the active account.",
+    },
+    {
+      name: "librarian.updateBooklets",
+      type: "action",
+      target: "db/UPDATE",
+      description:
+        "This permission is requested to update information about booklets for the active account.",
+    },
+    {
+      name: "librarian.deleteBooklets",
+      type: "action",
+      target: "db/DELETE",
+      description:
+        "This permission is requested to delete existing booklets for the active account.",
+    },
+    {
       name: "librarian.readTransactions",
       type: "getter",
-      target: "transaction/transactions",
+      target: "transaction/serializedTransactions",
       description:
-        "This permissions is requested to fetch transactions for the active account.",
+        "This permission is requested to fetch transactions for the active account.",
+    },
+    {
+      name: "librarian.readTransactionDetails",
+      type: "action",
+      target: "transaction/LOAD_TRANSACTION_DETAILS",
+      description:
+        "This permission is requested to fetch transaction details like embedded transactions.",
     },
     {
       name: "librarian.readMosaics",
       type: "getter",
       target: "mosaic/holdMosaics",
       description:
-        "This permissions is requested to fetch mosaic balances for the active account.",
+        "This permission is requested to fetch mosaic balances for the active account.",
     },
   ],
 };
