@@ -13,6 +13,32 @@ import { Address } from 'symbol-sdk';
 
 // internal dependencies
 import { AddressShortener } from '../Helpers';
+import { Generator } from '../generators/Generator';
+import { BasicGenerator } from '../generators/BasicGenerator';
+import { Transfer as TransferGenerator } from '../generators/Transfer';
+import { NamespaceRegistration as NamespaceRegistrationGenerator } from '../generators/NamespaceRegistration';
+import { NamespaceMetadata as NamespaceMetadataGenerator } from '../generators/NamespaceMetadata';
+import { MosaicDefinition as MosaicDefinitionGenerator } from '../generators/MosaicDefinition';
+import { MosaicSupplyChange as MosaicSupplyChangeGenerator } from '../generators/MosaicSupplyChange';
+import { MosaicAlias as MosaicAliasGenerator } from '../generators/MosaicAlias';
+import { MosaicMetadata as MosaicMetadataGenerator } from '../generators/MosaicMetadata';
+import { AccountMetadata as AccountMetadataGenerator } from '../generators/AccountMetadata';
+import { AddressAlias as AddressAliasGenerator } from '../generators/AddressAlias';
+import { AggregateComplete as AggregateCompleteGenerator } from '../generators/AggregateComplete';
+import { AggregateBonded as AggregateBondedGenerator } from '../generators/AggregateBonded';
+import { MultisigAccountModification as MultisigAccountModificationGenerator } from '../generators/MultisigAccountModification';
+import { HashLock as HashLockGenerator } from '../generators/HashLock';
+import { SecretLock as SecretLockGenerator } from '../generators/SecretLock';
+import { SecretProof as SecretProofGenerator } from '../generators/SecretProof';
+import { AccountAddressRestriction as AccountAddressRestrictionGenerator } from '../generators/AccountAddressRestriction';
+import { AccountMosaicRestriction as AccountMosaicRestrictionGenerator } from '../generators/AccountMosaicRestriction';
+import { AccountOperationRestriction as AccountOperationRestrictionGenerator } from '../generators/AccountOperationRestriction';
+import { MosaicAddressRestriction as MosaicAddressRestrictionGenerator } from '../generators/MosaicAddressRestriction';
+import { MosaicGlobalRestriction as MosaicGlobalRestrictionGenerator } from '../generators/MosaicGlobalRestriction';
+import { AccountKeyLink as AccountKeyLinkGenerator } from '../generators/AccountKeyLink';
+import { VrfKeyLink as VrfKeyLinkGenerator } from '../generators/VrfKeyLink';
+import { VotingKeyLink as VotingKeyLinkGenerator } from '../generators/VotingKeyLink';
+import { NodeKeyLink as NodeKeyLinkGenerator } from '../generators/NodeKeyLink';
 
 /**
  * @class {TaxonomyService}
@@ -37,35 +63,7 @@ export class TaxonomyService {
      * @returns {string}
      */
     public getOperation(transaction: any, aggregateHash?: string): string {
-        const prefix = !!aggregateHash ? '(Embedded) ' : '';
-
-        switch (transaction.type) {
-        case Transaction.Transfer: return prefix + 'Asset Transfer';
-        case Transaction.NamespaceRegistration: return prefix + 'Distributed Name Creation';
-        case Transaction.AddressAlias: return prefix + 'Address Tag';
-        case Transaction.MosaicAlias: return prefix + 'Asset Tag'
-        case Transaction.MosaicDefinition: return prefix + 'Asset Creation';
-        case Transaction.MosaicSupplyChange: return prefix + 'Asset Issuance';
-        case Transaction.MosaicMetadata: return prefix + 'Asset metadata';
-        case Transaction.AccountMetadata: return prefix + 'Identity metadata';
-        case Transaction.NamespaceMetadata: return prefix + 'Distributed name metadata';
-        case Transaction.AggregateComplete: return prefix + 'Multiparty Contract';
-        case Transaction.AggregateBonded: return prefix + 'Multiparty Contract';
-        case Transaction.MultisigAccountModification: return prefix + 'Multiparty Contract';
-        case Transaction.HashLock: return prefix + 'Asset Lock (Anti-SPAM)';
-        case Transaction.SecretLock: return prefix + 'Asset Lock (Secret)';
-        case Transaction.SecretProof: return prefix + 'Asset Claim (Proof)';
-        case Transaction.AccountAddressRestriction: return prefix + 'Collaborators whitelist/blacklist';
-        case Transaction.AccountMosaicRestriction: return prefix + 'Account assets whitelist/blacklist';
-        case Transaction.AccountOperationRestriction: return prefix + 'Operations whitelist/blacklist';
-        case Transaction.MosaicAddressRestriction: return prefix + 'Asset holders whitelist/blacklist';
-        case Transaction.MosaicGlobalRestriction: return prefix + 'Asset conditional whitelist/blacklist';
-        case Transaction.AccountKeyLink: return prefix + 'Staking key delegation';
-        case Transaction.VrfKeyLink: return prefix + 'Cryptographic key delegation';
-        case Transaction.VotingKeyLink: return prefix + 'Finalization key delegation';
-        case Transaction.NodeKeyLink: return prefix + 'Node key delegation';
-        default: return prefix + 'Unknown action';
-        }
+        return this.getGenerator(transaction).getDescriptor(aggregateHash);
     }
 
     /**
@@ -117,13 +115,7 @@ export class TaxonomyService {
      * @returns {string}
      */
     public getMainAction(transaction: any): string {
-        if (Transaction.Transfer === transaction.type) {
-            const assetEntry = transaction.mosaics[0];
-            const recipient = this.getParticipants(transaction).join('');
-            return `sent ${assetEntry.amount} ${assetEntry.id} to ${recipient}`;
-        }
-
-       return `signed a digital contract`;
+        return this.getGenerator(transaction).getSentence();
     }
 
     /**
@@ -136,22 +128,38 @@ export class TaxonomyService {
     public getOptionalDetails(transaction: any): string {
        return '';
     }
-
-    /**
-     * This method determines the main action that is executed with
-     * a \a transaction.
-     *
-     * @param   {any}   transaction 
-     * @returns {string}
-     */
-    public getParticipants(transaction: any): string[] {
-        if (Transaction.Transfer === transaction.type) {
-            return [AddressShortener(transaction.recipientAddress.address)];
-        }
-
-        return [];
-    }
     /// end-region public API
+
+    /// region protected API
+    protected getGenerator(transaction: any): Generator {
+        if (Transaction.Transfer === transaction.type) return new TransferGenerator(transaction);
+        else if (Transaction.NamespaceRegistration === transaction.type) return new NamespaceRegistrationGenerator(transaction);
+        else if (Transaction.AddressAlias === transaction.type) return new AddressAliasGenerator(transaction);
+        else if (Transaction.MosaicAlias === transaction.type) return new MosaicAliasGenerator(transaction);
+        else if (Transaction.MosaicDefinition === transaction.type) return new MosaicDefinitionGenerator(transaction);
+        else if (Transaction.MosaicSupplyChange === transaction.type) return new MosaicSupplyChangeGenerator(transaction);
+        else if (Transaction.MosaicMetadata === transaction.type) return new MosaicMetadataGenerator(transaction);
+        else if (Transaction.AccountMetadata === transaction.type) return new AccountMetadataGenerator(transaction);
+        else if (Transaction.NamespaceMetadata === transaction.type) return new NamespaceMetadataGenerator(transaction);
+        else if (Transaction.AggregateComplete === transaction.type) return new AggregateCompleteGenerator(transaction);
+        else if (Transaction.AggregateBonded === transaction.type) return new AggregateBondedGenerator(transaction);
+        else if (Transaction.MultisigAccountModification === transaction.type) return new MultisigAccountModificationGenerator(transaction);
+        else if (Transaction.HashLock === transaction.type) return new HashLockGenerator(transaction);
+        else if (Transaction.SecretLock === transaction.type) return new SecretLockGenerator(transaction);
+        else if (Transaction.SecretProof === transaction.type) return new SecretProofGenerator(transaction);
+        else if (Transaction.AccountAddressRestriction === transaction.type) return new AccountAddressRestrictionGenerator(transaction);
+        else if (Transaction.AccountMosaicRestriction === transaction.type) return new AccountMosaicRestrictionGenerator(transaction);
+        else if (Transaction.AccountOperationRestriction === transaction.type) return new AccountOperationRestrictionGenerator(transaction);
+        else if (Transaction.MosaicAddressRestriction === transaction.type) return new MosaicAddressRestrictionGenerator(transaction);
+        else if (Transaction.MosaicGlobalRestriction === transaction.type) return new MosaicGlobalRestrictionGenerator(transaction);
+        else if (Transaction.AccountKeyLink === transaction.type) return new AccountKeyLinkGenerator(transaction);
+        else if (Transaction.VrfKeyLink === transaction.type) return new VrfKeyLinkGenerator(transaction);
+        else if (Transaction.VotingKeyLink === transaction.type) return new VotingKeyLinkGenerator(transaction);
+        else if (Transaction.NodeKeyLink === transaction.type) return new NodeKeyLinkGenerator(transaction);
+
+        return new BasicGenerator(transaction);
+    }
+    /// end-region protected API
 }
 
  

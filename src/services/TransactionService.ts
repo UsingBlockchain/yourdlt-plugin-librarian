@@ -155,11 +155,19 @@ export class TransactionService {
         // generates a deterministic id for this transaction
         const autoId = DeterministicIdGenerator(transaction);
 
+        let operation: string = `Digital contract`,
+            description: string = `Unknown digital contract`;
+        try {
+            operation = service.getOperation(transaction, aggregateHash);
+            description = service.getDescription(transaction, aggregateHash);
+        }
+        catch (e) {}
+
         // augment transaction object with required fields
         return {
             id: autoId,
-            operation: service.getOperation(transaction, aggregateHash),
-            description: service.getDescription(transaction, aggregateHash),
+            operation,
+            description,
             transactionHash: hash,
             aggregateHash,
             ...transaction
