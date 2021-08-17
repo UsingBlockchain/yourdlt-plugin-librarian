@@ -46,6 +46,7 @@
           :page-size="10"
           :disable-headers="false"
           :disable-single-page-links="true"
+          :disable-rows-grid="true"
           :key="bookletsTimestamp"
           @on-clicked-row="onClickBooklet"
         >
@@ -53,6 +54,21 @@
             <h1 class="section-title">
               {{ 'Booklets' }}
             </h1>
+          </template>
+          <template v-slot:rows="props">
+            <draggable
+              :list="props.items"
+              v-bind="getOptions()"
+              tag="div"
+            >
+              <GenericTableRow
+                v-for="(rowValues, index) in props.items"
+                :key="index"
+                :row-values="rowValues"
+                @on-remove="$emit('on-remove', rowValues)"
+                @click="$emit('on-clicked-row', index)"
+              />
+            </draggable>
           </template>
         </GenericTableDisplay>
       </div>
@@ -70,7 +86,8 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
-import { GenericTableDisplay, IconButton } from '@yourdlt/wallet-components';
+import { GenericTableDisplay, GenericTableRow, IconButton } from '@yourdlt/wallet-components';
+import Draggable from 'vuedraggable';
 
 // internal dependencies
 import { BookletService } from '../../services/BookletService';
@@ -88,8 +105,10 @@ type ListedTransaction = {
 @Component({
   components: {
     GenericTableDisplay,
+    GenericTableRow,
     IconButton,
     ModalBookletForm,
+    Draggable,
   }
 })
 export default class Library extends Vue {
@@ -129,6 +148,16 @@ export default class Library extends Vue {
    * @var {number}
    */
   protected lastUpdatedBooklets: number = new Date().valueOf();
+
+  /**
+   * Options passed to underlying vue-draggable instance.
+   * @link https://vivify-ideas.github.io/vue-draggable/
+   * @var {any}
+   */
+  protected options: any = {
+    onDragend: (e) => this.onDragend(e),
+    onDrop: (e) => this.onDrop(e),
+  };
 
   /// region computed properties
   public get bookletFields(): any[] {
@@ -180,12 +209,28 @@ export default class Library extends Vue {
     this.lastUpdatedBooklets = new Date().valueOf();
   }
 
+  public getOptions() {
+    return this.options;
+  }
+
   public onClickBooklet(index) {
     console.log('Clicked booklet index: ', index);
   }
 
   public onClickEntry(index) {
     console.log('Clicked entry index: ', index);
+  }
+
+  public onDragend(event) {
+    if (!event.droptarget) {
+      console.log('booklet was dropped out');
+    }
+
+    console.log('booklet was reordered to: ', event.droptarget, event);
+  }
+
+  public onDrop(event) {
+    console.log('drop event caught: ', event);
   }
 
   public async saveBooklet(formItems: any) {
