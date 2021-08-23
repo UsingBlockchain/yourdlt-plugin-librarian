@@ -2,7 +2,7 @@
   "name": "@yourdlt/plugin-librarian",
   "description": "Librarian helps organize your on-chain data with YourDLT.",
   "homepage": "https://github.com/UsingBlockchain/yourdlt-plugin-librarian#readme",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "author": {
     "name": "Using Blockchain Ltd",
     "email": "info@ubc.digital",

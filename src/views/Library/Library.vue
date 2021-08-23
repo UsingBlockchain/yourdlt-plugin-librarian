@@ -19,6 +19,7 @@
         :page-size="10"
         :disable-headers="false"
         :disable-single-page-links="true"
+        :disable-rows-grid="true"
         :key="entriesTimestamp"
         @on-clicked-row="onClickEntry"
       >
@@ -26,6 +27,18 @@
           <h1 class="section-title">
             {{ 'Entries' }}
           </h1>
+        </template>
+        <template v-slot:empty>
+          <h2 class="empty-list">No transactions were found for your account.</h2>
+        </template>
+        <template v-slot:rows="props">
+          <GenericTableRow
+            v-for="(rowValues, index) in props.items"
+            :key="index"
+            :row-values="rowValues"
+            @on-remove="$emit('on-remove', rowValues)"
+            @click="$emit('on-clicked-row', index)"
+          />
         </template>
       </GenericTableDisplay>
     </div>
