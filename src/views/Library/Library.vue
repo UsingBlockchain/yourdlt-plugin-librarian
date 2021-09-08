@@ -21,7 +21,6 @@
         :disable-single-page-links="true"
         :disable-rows-grid="true"
         :key="entriesTimestamp"
-        @on-clicked-row="onClickEntry"
       >
         <template v-slot:table-title>
           <h1 class="section-title">
@@ -37,7 +36,7 @@
             :key="index"
             :row-values="rowValues"
             @on-remove="$emit('on-remove', rowValues)"
-            @click="$emit('on-clicked-row', index)"
+            @click="onClickEntry(rowValues.index)"
           />
         </template>
       </GenericTableDisplay>
@@ -54,14 +53,13 @@
       <div class="plugin-information">
         <GenericTableDisplay
           class="table-section"
-          :items="myBooklets"
+          :items="listedBooklets"
           :fields="bookletFields"
           :page-size="10"
           :disable-headers="false"
           :disable-single-page-links="true"
           :disable-rows-grid="true"
           :key="bookletsTimestamp"
-          @on-clicked-row="onClickBooklet"
         >
           <template v-slot:table-title>
             <h1 class="section-title">
@@ -69,19 +67,13 @@
             </h1>
           </template>
           <template v-slot:rows="props">
-            <draggable
-              :list="props.items"
-              v-bind="getOptions()"
-              tag="div"
-            >
-              <GenericTableRow
-                v-for="(rowValues, index) in props.items"
-                :key="index"
-                :row-values="rowValues"
-                @on-remove="$emit('on-remove', rowValues)"
-                @click="$emit('on-clicked-row', index)"
-              />
-            </draggable>
+            <GenericTableRow
+              v-for="(rowValues, index) in props.items"
+              :key="index"
+              :row-values="rowValues"
+              @on-remove="$emit('on-remove', rowValues)"
+              @click="onClickBooklet(rowValues.name)"
+            />
           </template>
         </GenericTableDisplay>
       </div>
@@ -94,25 +86,49 @@
       @confirmed="saveBooklet"
       @cancelled="showBookletFormModal = false"
     />
+
+    <ModalFolderizeForm
+      v-if="showFolderizeFormModal"
+      :visible="showFolderizeFormModal"
+      :title="'Move transaction to a Booklet'"
+      :booklets="listedBooklets"
+      :transaction="currentTransaction"
+      @confirmed="moveToBooklet"
+      @close="showFolderizeFormModal = false"
+    />
+
+    <ModalBookletViewer
+      v-if="showBookletViewerModal"
+      :visible="showBookletViewerModal"
+      :title="'Booklet information'"
+      :booklet="currentBooklet"
+      :transactions="getLinkedTransactions(currentBooklet)"
+      @close="showBookletViewerModal = false"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import { GenericTableDisplay, GenericTableRow, IconButton } from '@yourdlt/wallet-components';
-import Draggable from 'vuedraggable';
 
 // internal dependencies
-import { BookletService } from '../../services/BookletService';
+import { BookletService, FormattedBooklet, FormattedRelationship } from '../../services/BookletService';
 import { TransactionService, FormattedTransaction } from '../../services/TransactionService';
 
 // internal child components
 import ModalBookletForm from '../ModalBookletForm/ModalBookletForm.vue';
+import ModalFolderizeForm from '../ModalFolderizeForm/ModalFolderizeForm.vue';
+import ModalBookletViewer from '../ModalBookletViewer/ModalBookletViewer.vue';
 
 type ListedTransaction = {
   index: number,
   operation: string,
   description: string
+};
+
+type ListedBooklet = {
+  name: string,
 };
 
 @Component({
@@ -121,7 +137,8 @@ type ListedTransaction = {
     GenericTableRow,
     IconButton,
     ModalBookletForm,
-    Draggable,
+    ModalFolderizeForm,
+    ModalBookletViewer,
   }
 })
 export default class Library extends Vue {
@@ -140,15 +157,51 @@ export default class Library extends Vue {
 
   /**
    * Unfiltered list of booklets
-   * @var {any[]}
+   * @var {FormattedBooklet[]}
    */
-  public myBooklets: any[];
+  public allBooklets: FormattedBooklet[];
 
   /**
-   * Whether currently displaying the modal box
+   * Filtered/modified list of booklets
+   * @var {ListedBooklet[]}
+   */
+  public listedBooklets: ListedBooklet[];
+
+  /**
+   * Unfiltered list of relationships
+   * @var {FormattedRelationship[]}
+   */
+  public allRelationships: FormattedRelationship[];
+
+  /**
+   * Whether currently displaying the FORM modal box
    * @var {boolean}
    */
   public showBookletFormModal: boolean = false;
+
+  /**
+   * Whether currently displaying the MOVE modal box
+   * @var {boolean}
+   */
+  public showFolderizeFormModal: boolean = false;
+
+  /**
+   * Whether currently displaying the VIEW modal box
+   * @var {boolean}
+   */
+  public showBookletViewerModal: boolean = false;
+
+  /**
+   * The current active transaction (after click)
+   * @var {FormattedTransaction}
+   */
+  protected currentTransaction: FormattedTransaction;
+
+  /**
+   * The current active booklet (after click)
+   * @var {FormattedBooklet}
+   */
+  protected currentBooklet: FormattedBooklet;
 
   /**
    * Timestamp of the last update of entries.
@@ -162,16 +215,6 @@ export default class Library extends Vue {
    */
   protected lastUpdatedBooklets: number = new Date().valueOf();
 
-  /**
-   * Options passed to underlying vue-draggable instance.
-   * @link https://vivify-ideas.github.io/vue-draggable/
-   * @var {any}
-   */
-  protected options: any = {
-    onDragend: (e) => this.onDragend(e),
-    onDrop: (e) => this.onDrop(e),
-  };
-
   /// region computed properties
   public get bookletFields(): any[] {
     return [
@@ -184,6 +227,7 @@ export default class Library extends Vue {
       { name: 'index', label: '#' },
       { name: 'operation', label: 'Operation' },
       { name: 'description', label: 'Description' },
+      { name: 'bookletName', label: 'Booklet' },
     ];
   }
 
@@ -200,59 +244,107 @@ export default class Library extends Vue {
   public async created() {
     console.log("Librarian created");
 
-    const service = new TransactionService();
-
-    // Uses IPC to get data from app Store (Vuex)
-    this.allTransactions = (await service.getTransactions()).reduce(
-      (acc, transactions) => acc.concat(transactions), []
-    );
-
-    // Listed transactions are structured under their parent
-    this.listedTransactions = service.sortByParent(this.allTransactions).map(t => ({
-      index: t.index,
-      operation: t.operation,
-      description: t.description,
-    }));
-    this.lastUpdatedEntries = new Date().valueOf();
-
-    // Uses IPC to get data from app database (localStorage)
-    this.myBooklets = (await new BookletService().getBooklets()).map(b => ({
-      name: b.name,
-    }));
-    this.lastUpdatedBooklets = new Date().valueOf();
+    await this.refreshBooklets();
+    await this.refreshTransactions();
   }
 
-  public getOptions() {
-    return this.options;
-  }
-
-  public onClickBooklet(index) {
-    console.log('Clicked booklet index: ', index);
+  public onClickBooklet(name) {
+    console.log('Clicked booklet name: ', name);
+    this.currentBooklet = this.allBooklets.find(b => b.name === name);
+    this.showBookletViewerModal = true;
   }
 
   public onClickEntry(index) {
     console.log('Clicked entry index: ', index);
-  }
-
-  public onDragend(event) {
-    if (!event.droptarget) {
-      console.log('booklet was dropped out');
-    }
-
-    console.log('booklet was reordered to: ', event.droptarget, event);
-  }
-
-  public onDrop(event) {
-    console.log('drop event caught: ', event);
+    this.currentTransaction = this.allTransactions.find(t => t.index === index);
+    this.showFolderizeFormModal = true;
   }
 
   public async saveBooklet(formItems: any) {
     // Uses IPC to store data in app database (localStorage)
     await new BookletService().createBooklet(formItems);
+
+    // Updates view
+    await this.refreshBooklets();
     this.showBookletFormModal = false;
-    this.lastUpdatedBooklets = new Date().valueOf();
+  }
+
+  public async moveToBooklet(formItems: any) {
+    // Uses IPC to store data in app database (localStorage)
+    await new BookletService().linkTransactionToBooklet(
+      this.currentTransaction,
+      formItems.bookletName,
+    );
+
+    // Updates view
+    await this.refreshBooklets();
+    await this.refreshTransactions();
+
+    this.showFolderizeFormModal = false;
+  }
+
+  public getLinkedTransactions(
+    booklet: FormattedBooklet,
+  ): FormattedTransaction[] {
+    const relations = this.allRelationships.filter(r => r.bookletId === booklet.id);
+    const hashes = relations.map(r => r.transactionHash);
+
+    return this.allTransactions.filter(
+      t => hashes.includes(t.transactionHash)
+    );
+  }
+
+  public getLinkedBookletName(
+    transaction: FormattedTransaction,
+  ): string {
+    const relation = this.allRelationships.find(
+      r => r.transactionHash === transaction.transactionHash
+    );
+
+    if (!! relation) {
+      const bookletId = relation.bookletId;
+      const booklet = this.allBooklets.find(b => b.id === bookletId);
+      return booklet.name;
+    }
+
+    return 'Uncategorized';
   }
   /// end-region component methods
+
+  /// region private API
+  private async refreshBooklets() {
+    const bkService = new BookletService();
+
+    // Uses IPC to get data from app database (localStorage)
+    this.allBooklets = await bkService.getBooklets();
+    this.allRelationships = await bkService.getRelationships();
+
+    // Formats listed booklets
+    this.listedBooklets = this.allBooklets.map(b => ({
+      name: b.name,
+    }));
+    this.lastUpdatedBooklets = new Date().valueOf();
+  }
+
+  private async refreshTransactions() {
+    // defers main functionality internally
+    const txService = new TransactionService();
+
+    // Uses IPC to get data from app Store (Vuex)
+    this.allTransactions = (await txService.getTransactions()).reduce(
+      (acc, transaction) => acc.concat(transaction), []
+    ).map((t, index) => ({ ...t, index }));
+
+    // Listed transactions are structured under their parent
+    this.listedTransactions = txService.sortByParent(this.allTransactions).map(t => ({
+      index: t.index,
+      operation: t.operation,
+      description: t.description,
+      bookletName: this.getLinkedBookletName(t)
+    }));
+    this.lastUpdatedEntries = new Date().valueOf();
+  }
+  /// end-region private API
 }
 </script>
 

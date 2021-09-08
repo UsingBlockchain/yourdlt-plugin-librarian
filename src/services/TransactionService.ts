@@ -68,13 +68,20 @@ export class TransactionService {
         // use IPC to get data from app store (Vuex)
         const transactionBus = await PluginBridge.StoreActionRequest(
             '@yourdlt/plugin-librarian',
-            'getter',
+            PluginBridge.PluginPermissionType.Getter,
             'transaction/serializedTransactions',
         );
 
+        // handles emptiness
+        if (!transactionBus || !('response' in transactionBus) || !transactionBus.response) {
+            return new Promise(resolve => resolve([]));
+        }
+
+        console.log("[DEBUG][Librarian/TransactionService.ts] Transactions received: ", transactionBus);
+
         // parse transaction payloads to objects
         const response = transactionBus.response;
-        const transactions = Object.keys(response).map(
+        const transactions = Object.keys(response).filter(h => h in response && !!response[h]).map(
             h => this.formatTransaction(response[h], h)
         )
 
@@ -111,17 +118,24 @@ export class TransactionService {
      * @returns {Promise<FormattedTransaction[]>}
      */
     public async getTransactionDetails(transaction: FormattedTransaction): Promise<FormattedTransaction[]> {
-        return new Promise(async (resolve) => {
+        return new Promise(async (resolve, reject) => {
             // use IPC to get data from app store (Vuex)
             const detailsBus = await PluginBridge.StoreActionRequest(
                 '@yourdlt/plugin-librarian',
-                'action',
+                PluginBridge.PluginPermissionType.Action,
                 'transaction/LOAD_TRANSACTION_DETAILS',
                 {
                     group: 'confirmed',
                     transactionHash: transaction.transactionHash,
                 }
             );
+
+            console.log("[DEBUG][Librarian/TransactionService.ts] Transaction Details received: ", detailsBus);
+
+            // handles emptiness (no details here)
+            if (!('response' in detailsBus) || !('transaction' in detailsBus.response)) {
+                return resolve([]);
+            }
 
             // resolves formatted children (if any)
             if ('transactions' in detailsBus.response.transaction) {
@@ -165,7 +179,7 @@ export class TransactionService {
 
         // augment transaction object with required fields
         return {
-            id: autoId,
+            id: autoId.identifier,
             operation,
             description,
             transactionHash: hash,

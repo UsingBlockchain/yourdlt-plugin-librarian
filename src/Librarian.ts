@@ -66,6 +66,11 @@ export default {
       primaryKey: 'id',
       description: "Stores individual booklets to hold tagged entities.",
     },
+    {
+      storageKey: "librarian.transactionInBooklet",
+      primaryKey: 'id',
+      description: "Stores transaction to booklet relationships.",
+    },
   ],
 
   settings: [{ enableNotifications: true }],

@@ -39,8 +39,6 @@ export class Transfer extends Generator {
         let contentParts = [],
             messageParts = [];
 
-        console.log("Transfer generator got mosaics: ", this.transaction.mosaics);
-
         // first read the mosaics part
         if ('mosaics' in this.transaction && this.transaction.mosaics.length) {
             const assetEntry = this.transaction.mosaics[0];
