@@ -8,7 +8,7 @@
  * @license     LGPL-3.0
  */
 import Vue from 'vue';
-import { PluginBridge, RandomIdGenerator } from '@yourdlt/wallet-api-bridge';
+import { PluginBridge, RandomIdGenerator } from '@dhealth/wallet-api-bridge';
 
 // internal dependencies
 import { FormattedTransaction } from './TransactionService';

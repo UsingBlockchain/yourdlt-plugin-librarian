@@ -8,7 +8,7 @@
  * @license     LGPL-3.0
  */
 import Vue from 'vue';
-import { DeterministicIdGenerator, PluginBridge, Transaction } from '@yourdlt/wallet-api-bridge';
+import { DeterministicIdGenerator, PluginBridge, Transaction } from '@dhealth/wallet-api-bridge';
 import { AggregateTransaction, TransactionMapping } from 'symbol-sdk';
 
 // internal dependencies

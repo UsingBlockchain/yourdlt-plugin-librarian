@@ -110,7 +110,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
-import { GenericTableDisplay, GenericTableRow, IconButton } from '@yourdlt/wallet-components';
+import { GenericTableDisplay, GenericTableRow, IconButton } from '@dhealth/wallet-components';
 
 // internal dependencies
 import { BookletService, FormattedBooklet, FormattedRelationship } from '../../services/BookletService';

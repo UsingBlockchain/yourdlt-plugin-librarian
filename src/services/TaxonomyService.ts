@@ -8,7 +8,7 @@
  * @license     LGPL-3.0
  */
 import Vue from 'vue';
-import { Transaction } from '@yourdlt/wallet-api-bridge';
+import { Transaction } from '@dhealth/wallet-api-bridge';
 import { Address } from 'symbol-sdk';
 
 // internal dependencies

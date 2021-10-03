@@ -2,7 +2,7 @@
   "name": "@yourdlt/plugin-librarian",
   "description": "Librarian helps organize your on-chain data with YourDLT.",
   "homepage": "https://github.com/UsingBlockchain/yourdlt-plugin-librarian#readme",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "author": {
     "name": "Using Blockchain Ltd",
     "email": "info@ubc.digital",
@@ -32,8 +32,8 @@
   },
   "dependencies": {
     "@ubcdigital/symbol-taxonomy": "^1.0.3",
-    "@yourdlt/wallet-api-bridge": "latest",
-    "@yourdlt/wallet-components": "latest",
+    "@dhealth/wallet-api-bridge": "latest",
+    "@dhealth/wallet-components": "latest",
     "vue": "^2.6.10",
     "vue-property-decorator": "^8.1.0",
     "vee-validate": "^3.2.3",

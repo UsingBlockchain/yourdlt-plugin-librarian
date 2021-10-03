@@ -51,8 +51,8 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import { ValidationObserver, ValidationProvider } from 'vee-validate';
-import { Filters } from '@yourdlt/wallet-api-bridge';
-import { ErrorTooltip, FormRow, FormWrapper } from '@yourdlt/wallet-components';
+import { Filters } from '@dhealth/wallet-api-bridge';
+import { ErrorTooltip, FormRow, FormWrapper } from '@dhealth/wallet-components';
 
 @Component({
   components: {
