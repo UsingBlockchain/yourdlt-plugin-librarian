@@ -7,7 +7,7 @@
  * @author      Grégory Saive for Using Blockchain Ltd <greg@ubc.digital>
  * @license     LGPL-3.0
  */
-import { Address } from 'symbol-sdk';
+import { Address } from '@dhealth/sdk';
 
 // internal dependencies
 import { Generator } from './Generator';
@@ -38,6 +38,8 @@ export class VotingKeyLink extends Generator {
      * @returns {string} 
      */
     public getSentence(): string {
+        console.log("linkedPublicKey: ", this.transaction.linkedPublicKey);
+        console.log("VotingKeyLink tx: ", this.transaction);
         const address = AddressShortener(Address.createFromPublicKey(this.transaction.linkedPublicKey, this.transaction.networkType).plain());
         const action = this.transaction.linkAction === 0 ? 'disabled delegation of' : 'delegated';
         return `${action} finalization voting capacity to ${address}`;

@@ -9,7 +9,7 @@
  */
 import Vue from 'vue';
 import { Transaction } from '@dhealth/wallet-api-bridge';
-import { Address } from 'symbol-sdk';
+import { Address } from '@dhealth/sdk';
 
 // internal dependencies
 import { AddressShortener } from '../Helpers';
@@ -115,6 +115,7 @@ export class TaxonomyService {
      * @returns {string}
      */
     public getMainAction(transaction: any): string {
+        console.log("Sending tx through generator: ", transaction);
         return this.getGenerator(transaction).getSentence();
     }
 

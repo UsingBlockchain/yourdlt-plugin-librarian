@@ -7,7 +7,7 @@
  * @author      Grégory Saive for Using Blockchain Ltd <greg@ubc.digital>
  * @license     LGPL-3.0
  */
-import { MosaicRestrictionType } from 'symbol-sdk';
+import { MosaicRestrictionType } from '@dhealth/sdk';
 
 // internal dependencies
 import { Generator } from './Generator';

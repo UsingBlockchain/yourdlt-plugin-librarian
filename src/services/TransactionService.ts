@@ -9,7 +9,7 @@
  */
 import Vue from 'vue';
 import { DeterministicIdGenerator, PluginBridge, Transaction } from '@dhealth/wallet-api-bridge';
-import { AggregateTransaction, TransactionMapping } from 'symbol-sdk';
+import { AggregateTransaction, TransactionMapping } from '@dhealth/sdk';
 
 // internal dependencies
 import { TaxonomyService } from './TaxonomyService';

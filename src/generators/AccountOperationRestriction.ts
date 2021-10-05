@@ -7,7 +7,7 @@
  * @author      Grégory Saive for Using Blockchain Ltd <greg@ubc.digital>
  * @license     LGPL-3.0
  */
-import { OperationRestrictionFlag } from 'symbol-sdk';
+import { OperationRestrictionFlag } from '@dhealth/sdk';
 
 // internal dependencies
 import { Generator } from './Generator';

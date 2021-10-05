@@ -7,7 +7,7 @@
  * @author      Grégory Saive for Using Blockchain Ltd <greg@ubc.digital>
  * @license     LGPL-3.0
  */
-import { UInt64 } from 'symbol-sdk';
+import { UInt64 } from '@dhealth/sdk';
 
 export const AddressShortener = (address: string): string => {
   return [
