@@ -2,7 +2,7 @@
   "name": "@yourdlt/plugin-librarian",
   "description": "Librarian helps organize your on-chain data with YourDLT.",
   "homepage": "https://github.com/UsingBlockchain/yourdlt-plugin-librarian#readme",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "author": {
     "name": "Using Blockchain Ltd",
     "email": "info@ubc.digital",
@@ -13,20 +13,21 @@
     "url": "https://github.com/UsingBlockchain/yourdlt-plugin-librarian.git"
   },
   "license": "LGPL-3.0-only",
-  "main": "dist/YourDLTWalletPluginLibrarian.common.js",
+  "main": "dist/YourDLTWalletPluginLibrarian.umd.min.js",
   "types": "dist/types/Librarian.d.ts",
   "browser": {
     "./sfc": "dist/views/Library/Library.vue"
   },
   "files": [
     "dist/*",
+    "LICENSE",
     "README.md",
     "package.json"
   ],
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "npm run build:lib && npm run build:ts && npm run copy:vue",
-    "build:lib": "vue-cli-service build --target lib --name YourDLTWalletPluginLibrarian src/Librarian.ts --mode production --inline-vue --formats commonjs",
+    "build:lib": "vue-cli-service build --target lib --name YourDLTWalletPluginLibrarian src/Librarian.ts --mode production --formats umd-min",
     "build:ts": "tsc --emitDeclarationOnly",
     "copy:vue": "cpy '**/*.vue' '../dist/' --cwd=src --parents"
   },
@@ -35,8 +36,6 @@
     "@dhealth/wallet-api-bridge": "^1.3.0",
     "@dhealth/wallet-components": "^1.3.0",
     "@ubcdigital/symbol-taxonomy": "^1.0.3",
-    "vue": "^2.6.10",
-    "vue-property-decorator": "^8.1.0",
     "vee-validate": "^3.2.3"
   },
   "devDependencies": {
@@ -61,6 +60,8 @@
     "vue-template-compiler": "^2.5.2",
     "cpy-cli": "^3.1.1",
     "less": "^3.0.4",
-    "less-loader": "^4.1.0"
+    "less-loader": "^4.1.0",
+    "vue": "^2.6.10",
+    "vue-property-decorator": "^8.1.0"
   }
 }

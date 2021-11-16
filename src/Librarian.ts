@@ -53,8 +53,8 @@ export default {
         hideFromMenu: true,
       },
       // @ts-ignore
-      component: () => import("@/views/Library/Library.vue"),
       props: false,
+      // no-component
     },
   ],
 

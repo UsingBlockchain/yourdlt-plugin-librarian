@@ -1,5 +1,5 @@
 
-<p align="center"><img src="https://yourdlt.tools/logo-yourdlt-192x192.png" width="250"></p>
+<p align="center"><img src="https://ubc.digital/wp-content/uploads/2021/11/cropped-ubc-logo-test.png" width="250"></p>
 
 # YourDLT Wallet Plugin: Librarian
 
@@ -7,7 +7,7 @@
 [![dl-badge][dl-badge]][npm-url]
 [![License](https://img.shields.io/badge/License-LGPL%203.0%20only-blue.svg)](https://opensource.org/licenses/LGPL-3.0)
 
-Librarian helps organize your on-chain data in [YourDLT Wallet][parent-url].
+Librarian helps organize your on-chain data in [dHealth Wallet][parent-url].
 
 - [Components found here](#components-found-here)
 - [Sponsor Us](#sponsor-us)
@@ -47,7 +47,7 @@ Licensed under the [LGPL v3.0](LICENSE)
 
 [ref-ltd]: https://using-blockchain.org
 [mag-url]: https://ubc.digital
-[parent-url]: https://github.com/UsingBlockchain/yourdlt-wallet
+[parent-url]: https://github.com/dhealthproject/dhealth-wallet
 [npm-url]: https://www.npmjs.com/package/@yourdlt/plugin-librarian
 [npm-badge]: https://img.shields.io/npm/v/@yourdlt/plugin-librarian
 [dl-badge]: https://img.shields.io/npm/dt/@yourdlt/plugin-librarian
