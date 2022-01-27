@@ -41,6 +41,8 @@ export const registerComponents = (): { [s: string]: VueConstructor } => {
 
 /// region installable plugin
 export default {
+  friendlyName: "Transaction Library",
+
   view: "Library",
 
   routes: [
